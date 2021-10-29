@@ -25,4 +25,4 @@ set-version version:
 
 # Attempts to publish the crate using `cargo workspaces`
 publish:
-    cargo workspaces publish --from-git --no-git-commit --no-git-push --no-git-tag -y 
+    cargo workspaces publish --from-git -y --token $CARGO_REGISTRY_TOKEN
