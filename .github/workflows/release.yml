@@ -1,0 +1,53 @@
+# This is a basic workflow to generate release artifacts for rust projects
+# It requires a [Repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
+# For `cargo publish` that can be obtained [here](https://crates.io/me)
+# CARGO_REGISTRY_TOKEN: <your_token>
+
+name: Release
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push but only for the main branch
+  push:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "release"
+  release:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Use `release-please` to track changes and generate release PRs
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
+        with:
+          release-type: rust
+          # The name of your crate
+          package-name: "{{ crate_name }}"
+      # The logic below handles the crates.io publication:
+      - uses: actions/checkout@v2
+        # these if statements ensure that a publication only occurs when
+        # a new release is created:
+        if: ${{ steps.release.outputs.release_created }}
+      # Install Just, so we can use our Justfile in the action
+      - run: cargo install just
+        if: ${{ steps.release.outputs.release_created }}
+      # Install necessary tools
+      - run: just install-tools
+        if: ${{ steps.release.outputs.release_created }}
+      # Check our code
+      - run: just check
+        if: ${{ steps.release.outputs.release_created }}
+      # Run tests
+      - run: just test
+        if: ${{ steps.release.outputs.release_created }}
+      # Publish the crate (note: release-please will have updated the Cargo.toml for us, so it should already have the correct version)
+      - run: just publish
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
