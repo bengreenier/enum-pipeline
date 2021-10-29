@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/bengreenier/enum-pipeline/compare/v2.0.0...v2.0.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* **license:** Case sensitive ([d42c4e2](https://www.github.com/bengreenier/enum-pipeline/commit/d42c4e23eab05ac65360869c70366c64aebf1072))
+
 ## 2.0.0 (2021-10-29)
 
 
