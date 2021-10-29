@@ -1,7 +1,7 @@
 [package]
 name = "enum_pipeline_derive"
 description = "Provides derive macros for enum_pipeline."
-license = "mit"
+license = "MIT"
 version = "2.0.0"
 edition = "2021"
 
